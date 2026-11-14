@@ -215,6 +215,6 @@ World Radio Auto builds against the following open-source libraries via Gradle (
 
 ## 📄 License
 
-Copyright (C) 2026 Claudiu Roata
+Copyright (c) 2026 Claudiu Roata
 
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)** — see the [LICENSE](LICENSE) file for full details.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for full details.
