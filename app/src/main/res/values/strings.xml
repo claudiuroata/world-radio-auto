@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">World Radio Auto</string>
+    <string name="tab_recent">Recent</string>
+    <string name="tab_favorites">Favorites</string>
+    <string name="tab_local">Local</string>
+    <string name="tab_world">World</string>
+    <string name="tab_popular">Popular</string>
+    <string name="tab_hidden">Hidden</string>
+    <string name="search_hint">Search radio stations, genres...</string>
+    <string name="no_recents">No recently played stations yet.\nStart listening to stations to see them here.</string>
+    <string name="no_favorites">No favorite stations yet.\nTap the star icon on any station to add it to your favorites.</string>
+    <string name="no_hidden">No hidden stations yet.\nTap the hide icon on any station to exclude it from all other tabs and queues.</string>
+    <string name="loading">Tuning in...</string>
+    <string name="error_loading">Unable to load radio stations. Please check your connection.</string>
+    <string name="retry">Retry</string>
+    <string name="select_country">Select Country</string>
+</resources>
