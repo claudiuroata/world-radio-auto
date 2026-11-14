@@ -1,50 +1,40 @@
-# Built application files
-*.apk
-*.ap_
-*.aab
-
-# Files for the ART/Dalvik VM
-*.dex
-
-# Java class files
-*.class
-
-# Generated files
+# Gradle & build outputs
+.gradle/
+build/
+app/build/
 bin/
 gen/
 out/
 release/
+captures/
+.externalNativeBuild/
+.cxx/
+.kotlin/
 
-# Gradle files
-.gradle/
-build/
-app/build/
-
-# Local configuration file (sdk path, etc)
+# Local configuration & SDK paths (never commit)
 local.properties
 
-# Android Studio / IntelliJ IDEA
-*.iml
+# IDE & Android Studio metadata
 .idea/
+*.iml
+*.ipr
+*.iws
 misc.xml
 deploymentTargetSelector.xml
 navEditor.xml
 
-# Kotlin plugin cache
-.kotlin/
-
-# Keystore / signing files (never commit release secrets)
+# Keystores, compiled packages & heap dumps
 *.jks
 *.keystore
-
-# Android Profiling / Captures
-captures/
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
 *.hprof
 
-# Log files
-*.log
-
-# OS-generated files
+# OS & temporary files
 .DS_Store
 Thumbs.db
 desktop.ini
+*.log
