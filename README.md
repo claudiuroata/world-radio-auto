@@ -4,6 +4,14 @@ An Android online radio streaming application optimized for **Android Auto** and
 
 ---
 
+## 📸 Screenshots
+
+| Popular Stations | Live Playback & Local | Browse by Country | Favorites |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/screenshots/01-home-stations.png" width="200" alt="World Radio Auto Popular Stations" /> | <img src="docs/screenshots/02-now-playing.png" width="200" alt="World Radio Auto Live Playback" /> | <img src="docs/screenshots/03-countries-genres.png" width="200" alt="World Radio Auto Browse by Country" /> | <img src="docs/screenshots/04-search-favorites.png" width="200" alt="World Radio Auto Favorites" /> |
+
+---
+
 ## 🌟 Key Features
 
 - **Optimized for Android Auto**: Fully compliant with Google's Automotive Media App standards using modern **AndroidX Media3 (`MediaLibraryService`)**.
