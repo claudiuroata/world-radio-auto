@@ -102,6 +102,7 @@ class RadioMediaService : MediaLibraryService() {
         mediaLibrarySession?.notifyChildrenChanged(MediaItemConverter.TAB_FAVORITES, 100, null)
         mediaLibrarySession?.notifyChildrenChanged(MediaItemConverter.TAB_LOCAL, 100, null)
         mediaLibrarySession?.notifyChildrenChanged(MediaItemConverter.TAB_SUGGESTED, 25, null)
+        mediaLibrarySession?.notifyChildrenChanged(MediaItemConverter.TAB_POPULAR, 70, null)
         mediaLibrarySession?.notifyChildrenChanged(MediaItemConverter.TAB_HIDDEN, 100, null)
         keys.filter { it.startsWith(MediaItemConverter.PREFIX_COUNTRY) }.forEach { countryKey ->
             mediaLibrarySession?.notifyChildrenChanged(countryKey, 100, null)
@@ -463,6 +464,16 @@ class RadioMediaService : MediaLibraryService() {
                         PlaylistQueueHelper.filterStationsForQueue(CuratedStations.ROMANIA_STARTER_STATIONS, hiddenIds)
                     }
                     stations.map { MediaItemConverter.stationToMediaItem(it, MediaItemConverter.TAB_LOCAL) }
+                }
+                parentId == MediaItemConverter.TAB_POPULAR -> {
+                    val popularResult = RadioApp.instance.repository.getPopularStations()
+                    val popular = popularResult.getOrNull()
+                    val stations = if (!popular.isNullOrEmpty()) {
+                        popular
+                    } else {
+                        PlaylistQueueHelper.filterStationsForQueue(CuratedStations.GLOBAL_POPULAR_STATIONS, hiddenIds)
+                    }
+                    stations.map { MediaItemConverter.stationToMediaItem(it, MediaItemConverter.TAB_POPULAR) }
                 }
                 parentId.startsWith(MediaItemConverter.PREFIX_COUNTRY) -> {
                     val countryCode = parentId.removePrefix(MediaItemConverter.PREFIX_COUNTRY)

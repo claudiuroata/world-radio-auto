@@ -1,6 +1,7 @@
 package com.worldradio.auto.ui.viewmodel
 
 import android.app.Application
+import android.os.Looper
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.worldradio.auto.data.local.RadioDatabase
@@ -27,6 +28,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -62,8 +64,10 @@ class RadioViewModelTest {
     private fun awaitUntil(timeoutMs: Long = 3000L, predicate: () -> Boolean) = runBlocking {
         val deadline = System.currentTimeMillis() + timeoutMs
         while (!predicate() && System.currentTimeMillis() < deadline) {
+            shadowOf(Looper.getMainLooper()).idle()
             delay(15)
         }
+        shadowOf(Looper.getMainLooper()).idle()
         assertTrue("Condition was not met within ${timeoutMs}ms", predicate())
     }
 
@@ -175,10 +179,15 @@ class RadioViewModelTest {
     fun loadLocalStations_fallsBackToCuratedOnFailureAndStillExcludesHiddenCuratedStations() = runBlocking {
         val curatedFirst = CuratedStations.ROMANIA_STARTER_STATIONS.first()
         repository.toggleHidden(curatedFirst)
+        awaitUntil { viewModel.hiddenStations.value.any { it.id == curatedFirst.id } }
         api.shouldFailByCountry = true
 
         viewModel.loadLocalStations("RO")
-        awaitUntil { !viewModel.isLoading.value && viewModel.localStations.value.isNotEmpty() }
+        awaitUntil {
+            !viewModel.isLoading.value &&
+                viewModel.localStations.value.isNotEmpty() &&
+                viewModel.localStations.value.none { it.id == curatedFirst.id }
+        }
 
         assertFalse(viewModel.localStations.value.any { it.id == curatedFirst.id })
         assertTrue(viewModel.localStations.value.any { it.id == "curated_ro_2" })
@@ -195,5 +204,33 @@ class RadioViewModelTest {
         val fallbackVm = RadioViewModel(app, repository, autoConnect = false)
         fallbackVm.loadCountries()
         awaitUntil { fallbackVm.countries.value.isNotEmpty() }
+    }
+
+    @Test
+    fun loadPopularStations_excludesHiddenAndFallsBackToGlobalCurated() = runBlocking {
+        api.topVoted = listOf(
+            dto(id = "pop_1", name = "Worldwide One", votes = 5000),
+            dto(id = "pop_2", name = "Worldwide Two", votes = 3000)
+        )
+        viewModel.loadPopularStations()
+        awaitUntil { viewModel.popularStations.value.map { it.id } == listOf("pop_1", "pop_2") }
+
+        // Hide pop_1 -> excluded from popularStations reactively
+        viewModel.toggleHidden(viewModel.popularStations.value.first())
+        awaitUntil { viewModel.popularStations.value.map { it.id } == listOf("pop_2") }
+
+        // On API failure when empty, falls back to GLOBAL_POPULAR_STATIONS minus hidden items
+        val hiddenCurated = CuratedStations.GLOBAL_POPULAR_STATIONS.first()
+        repository.toggleHidden(hiddenCurated)
+        api.shouldFailTopVoted = true
+        val fallbackVm = RadioViewModel(app, repository, autoConnect = false)
+        awaitUntil { fallbackVm.hiddenStations.value.any { it.id == hiddenCurated.id } }
+        fallbackVm.loadPopularStations()
+        awaitUntil {
+            fallbackVm.popularStations.value.isNotEmpty() &&
+                fallbackVm.popularStations.value.none { it.id == hiddenCurated.id }
+        }
+        assertFalse(fallbackVm.popularStations.value.any { it.id == hiddenCurated.id })
+        assertTrue(fallbackVm.popularStations.value.any { it.id == "curated_global_2" })
     }
 }

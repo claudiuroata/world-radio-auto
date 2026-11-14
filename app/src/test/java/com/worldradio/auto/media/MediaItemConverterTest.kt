@@ -50,7 +50,7 @@ class MediaItemConverterTest {
     }
 
     @Test
-    fun buildTopLevelTabs_includesHiddenTabWithGridPlayableStyle() {
+    fun buildTopLevelTabs_includesPopularAndHiddenTabsWithGridPlayableStyle() {
         val tabs = MediaItemConverter.buildTopLevelTabs()
         assertEquals(
             listOf(
@@ -58,10 +58,16 @@ class MediaItemConverterTest {
                 MediaItemConverter.TAB_FAVORITES,
                 MediaItemConverter.TAB_LOCAL,
                 MediaItemConverter.TAB_WORLD,
+                MediaItemConverter.TAB_POPULAR,
                 MediaItemConverter.TAB_HIDDEN
             ),
             tabs.map { it.mediaId }
         )
+
+        val popularTab = tabs[4]
+        assertEquals("Popular", popularTab.mediaMetadata.title.toString())
+        assertTrue(popularTab.mediaMetadata.isBrowsable == true)
+        assertFalse(popularTab.mediaMetadata.isPlayable == true)
 
         val hiddenTab = tabs.last()
         assertEquals("Hidden", hiddenTab.mediaMetadata.title.toString())

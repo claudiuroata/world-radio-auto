@@ -7,14 +7,15 @@ An Android online radio streaming application optimized for **Android Auto** and
 ## 🌟 Key Features
 
 - **Optimized for Android Auto**: Fully compliant with Google's Automotive Media App standards using modern **AndroidX Media3 (`MediaLibraryService`)**.
-- **Car Head-Unit Navigation**: The top-level root hierarchy exposes 5 dedicated categories:
+- **Car Head-Unit Navigation**: The top-level root hierarchy exposes 6 dedicated categories (Android Auto shows the primary tabs and automatically places additional categories cleanly into its overflow/More menu):
   1. 🕒 **Recent** *(First Tab)*: Quickly resume recently played radio stations.
   2. ⭐ **Favorites** *(Second Tab)*: Instant access to starred stations with one tap from the dashboard.
   3. 📍 **Local**: Live broadcast stations detected for your locale/country.
   4. 🌍 **World / Filter by Country**: Browse global stations organized by country and region.
-  5. 🔥 **Popular**: Highest voted and top-streamed stations across the globe.
+  5. 🔥 **Popular**: Highest voted stations worldwide.
+  6. 🚫 **Hidden**: Stations explicitly hidden from all normal tabs and queues.
 - **In-Car Controls**:
-  - Head-unit custom action button (`ACTION_TOGGLE_FAVORITE`) to star/unstar stations while driving.
+  - Head-unit custom action buttons to **Favorite** (`COMMAND_TOGGLE_FAVORITE`), **Hide** (`COMMAND_TOGGLE_HIDE`), and **Shuffle** (`COMMAND_TOGGLE_SHUFFLE`) without leaving the media screen.
   - Ignition / Bluetooth reconnect playback resumption (`onPlaybackResumption`).
   - Audio focus & noise handling (smooth pause when disconnected from car Bluetooth or on GPS/call interrupts).
 - **Mobile Experience**:
@@ -75,16 +76,17 @@ world-radio-auto/
 In Android Auto, media apps do not draw custom arbitrary UI on the car screen; instead, they integrate with the car's native automotive media template via **AndroidX Media3**:
 
 1. **Root Tabs**:
-   In `RadioMediaService.kt`, `onGetChildren(parentId = "[ROOT]")` returns 5 browsable `MediaItem`s. Android Auto renders these 5 items directly as the navigation tabs across the car screen:
+   In `RadioMediaService.kt`, `onGetChildren(parentId = "[ROOT]")` returns 6 browsable `MediaItem`s (Android Auto renders the primary tabs directly and routes extra categories into its overflow/More tab):
    - `[TAB_RECENT]`
    - `[TAB_FAVORITES]`
    - `[TAB_LOCAL]`
    - `[TAB_WORLD]`
    - `[TAB_POPULAR]`
+   - `[TAB_HIDDEN]`
 2. **Deep Browsing**:
    Selecting **World** returns country folders. Tapping a country returns playable station streams for that country.
 3. **In-Car Actions**:
-   `COMMAND_TOGGLE_FAVORITE` is registered as a custom action in `MediaLibrarySession`, displaying a Star icon on the car display to toggle favorites without leaving the media screen.
+   `COMMAND_TOGGLE_FAVORITE`, `COMMAND_TOGGLE_HIDE`, and `COMMAND_TOGGLE_SHUFFLE` are registered as custom actions in `MediaLibrarySession` on the car display.
 
 ---
 

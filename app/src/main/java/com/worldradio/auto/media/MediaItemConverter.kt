@@ -100,6 +100,7 @@ object MediaItemConverter {
             createTabItem(TAB_FAVORITES, "Favorites", "Your starred stations"),
             createTabItem(TAB_LOCAL, "Local", "Trending streams in your country"),
             createTabItem(TAB_WORLD, "World", "Browse countries & top voted"),
+            createTabItem(TAB_POPULAR, "Popular", "Top voted stations worldwide"),
             createTabItem(TAB_HIDDEN, "Hidden", "Hidden stations")
         )
     }

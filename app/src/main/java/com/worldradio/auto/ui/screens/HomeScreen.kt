@@ -92,13 +92,14 @@ fun HomeScreen(
     var showDiagnosticsDialog by remember { mutableStateOf(false) }
 
     // Tab items: Recent (#1) and Favorites (#2) are the first two tabs!
-    // 5 distinct tabs: Recent (chronological), Favorites (A-Z), Local (stream clicks), World (countries / top voted), Hidden (A-Z)
+    // 6 distinct tabs: Recent (chronological), Favorites (A-Z), Local (stream clicks), World (countries), Popular (worldwide top voted), Hidden (A-Z)
     val tabs = remember {
         listOf(
             TabInfo("Recent", Icons.Default.History, isAlphabetical = false),
             TabInfo("Favorites", Icons.Default.Star, isAlphabetical = true),
             TabInfo("Local", Icons.Default.LocationOn, isAlphabetical = false),
             TabInfo("World", Icons.Default.Public, isAlphabetical = false),
+            TabInfo("Popular", Icons.AutoMirrored.Filled.TrendingUp, isAlphabetical = false),
             TabInfo("Hidden", Icons.Default.VisibilityOff, isAlphabetical = true)
         )
     }
@@ -120,6 +121,7 @@ fun HomeScreen(
     val countries by viewModel.countries.collectAsState()
     val selectedCountry by viewModel.selectedCountry.collectAsState()
     val countryStations by viewModel.countryStations.collectAsState()
+    val popularStations by viewModel.popularStations.collectAsState()
     val hiddenStations by viewModel.hiddenStations.collectAsState()
 
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -353,7 +355,16 @@ fun HomeScreen(
                                 onFavoriteToggle = { viewModel.toggleFavorite(it) },
                                 onHideToggle = { viewModel.toggleHidden(it) }
                             )
-                            4 -> HiddenScreen(
+                            4 -> PopularScreen(
+                                stations = popularStations,
+                                currentStation = currentStation,
+                                isPlaying = isPlaying,
+                                isLoading = isLoading,
+                                onStationClick = { viewModel.playStation(it, popularStations) },
+                                onFavoriteToggle = { viewModel.toggleFavorite(it) },
+                                onHideToggle = { viewModel.toggleHidden(it) }
+                            )
+                            5 -> HiddenScreen(
                                 stations = hiddenStations,
                                 currentStation = currentStation,
                                 isPlaying = isPlaying,

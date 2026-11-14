@@ -88,6 +88,9 @@ class RadioViewModel internal constructor(
     private val _countryStations = MutableStateFlow<List<Station>>(emptyList())
     val countryStations: StateFlow<List<Station>> = withUserFlags(_countryStations)
 
+    private val _popularStations = MutableStateFlow<List<Station>>(emptyList())
+    val popularStations: StateFlow<List<Station>> = withUserFlags(_popularStations)
+
     private val _currentStation = MutableStateFlow<Station?>(null)
     val currentStation: StateFlow<Station?> = combine(_currentStation, favoriteIds, hiddenIds) { station, favIds, hidIds ->
         station?.copy(
@@ -129,6 +132,7 @@ class RadioViewModel internal constructor(
             _localCountryCode.value = detected
             loadLocalStations(detected)
             loadCountries()
+            loadPopularStations()
 
             // Background IP check to verify country when roaming / Wi-Fi
             viewModelScope.launch {
@@ -328,6 +332,20 @@ class RadioViewModel internal constructor(
                     }
                 }
             _isLoading.value = false
+        }
+    }
+
+    internal fun loadPopularStations() {
+        viewModelScope.launch {
+            repository.getPopularStations()
+                .onSuccess { stations ->
+                    _popularStations.value = if (stations.isNotEmpty()) stations else CuratedStations.GLOBAL_POPULAR_STATIONS
+                }
+                .onFailure {
+                    if (_popularStations.value.isEmpty()) {
+                        _popularStations.value = CuratedStations.GLOBAL_POPULAR_STATIONS
+                    }
+                }
         }
     }
 
