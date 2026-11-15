@@ -4,6 +4,26 @@ An Android online radio streaming application optimized for **Android Auto** and
 
 ---
 
+## 📸 Screenshots
+
+### 🚗 Car Display (Android Auto / Automotive Head Unit)
+
+| Local Stations Grid | Now Playing |
+| :---: | :---: |
+| <img src="docs/screenshots/car-01-local-stations.png" width="420" alt="World Radio Auto Car Display Local Stations" /> | <img src="docs/screenshots/car-02-now-playing.png" width="420" alt="World Radio Auto Car Display Now Playing" /> |
+
+| World — Browse by Country | Favorites |
+| :---: | :---: |
+| <img src="docs/screenshots/car-03-world-countries.png" width="420" alt="World Radio Auto Car Display World Countries" /> | <img src="docs/screenshots/car-04-favorites-popular.png" width="420" alt="World Radio Auto Car Display Favorites" /> |
+
+### 📱 Mobile App
+
+| Popular Stations | Live Playback & Local | Browse by Country | Favorites |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/screenshots/01-home-stations.png" width="200" alt="World Radio Auto Popular Stations" /> | <img src="docs/screenshots/02-now-playing.png" width="200" alt="World Radio Auto Live Playback" /> | <img src="docs/screenshots/03-countries-genres.png" width="200" alt="World Radio Auto Browse by Country" /> | <img src="docs/screenshots/04-search-favorites.png" width="200" alt="World Radio Auto Favorites" /> |
+
+---
+
 ## 🌟 Key Features
 
 - **Optimized for Android Auto**: Fully compliant with Google's Automotive Media App standards using modern **AndroidX Media3 (`MediaLibraryService`)**.
