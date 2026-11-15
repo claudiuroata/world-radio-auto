@@ -61,6 +61,37 @@ class RadioMediaService : MediaLibraryService() {
 
         const val ACTION_TOGGLE_HIDE = "com.worldradio.auto.ACTION_TOGGLE_HIDE"
         val COMMAND_TOGGLE_HIDE = SessionCommand(ACTION_TOGGLE_HIDE, Bundle.EMPTY)
+
+        /**
+         * Builds Android Auto's custom playback actions in display priority order:
+         * Favorite, Hide, then Shuffle. Compact Coolwalk cards show only the first two
+         * custom actions, while wide/expanded views render all three.
+         */
+        internal fun buildCustomLayoutButtons(
+            isFavorite: Boolean,
+            isHidden: Boolean,
+            isShuffled: Boolean
+        ): ImmutableList<CommandButton> {
+            val favoriteButton = CommandButton.Builder()
+                .setDisplayName(if (isFavorite) "Favorited" else "Favorite")
+                .setIconResId(if (isFavorite) R.drawable.ic_star_on else R.drawable.ic_star_off)
+                .setSessionCommand(COMMAND_TOGGLE_FAVORITE)
+                .build()
+
+            val hideButton = CommandButton.Builder()
+                .setDisplayName(if (isHidden) "Unhide" else "Hide")
+                .setIconResId(if (isHidden) R.drawable.ic_hide_on else R.drawable.ic_hide_off)
+                .setSessionCommand(COMMAND_TOGGLE_HIDE)
+                .build()
+
+            val shuffleButton = CommandButton.Builder()
+                .setDisplayName(if (isShuffled) "Shuffle: ON" else "Shuffle: OFF")
+                .setIconResId(if (isShuffled) R.drawable.ic_shuffle_on else R.drawable.ic_shuffle_off)
+                .setSessionCommand(COMMAND_TOGGLE_SHUFFLE)
+                .build()
+
+            return ImmutableList.of(favoriteButton, hideButton, shuffleButton)
+        }
     }
 
     override fun onCreate() {
@@ -193,27 +224,13 @@ class RadioMediaService : MediaLibraryService() {
             MediaItemConverter.parseMediaId(it.mediaId).second
         }
         val isFav = pureStationId != null && cachedFavoriteIds.contains(pureStationId)
-        val favoriteButton = CommandButton.Builder()
-            .setDisplayName(if (isFav) "Favorited" else "Favorite")
-            .setIconResId(if (isFav) R.drawable.ic_star_on else R.drawable.ic_star_off)
-            .setSessionCommand(COMMAND_TOGGLE_FAVORITE)
-            .build()
-
-        val isShuffled = if (::player.isInitialized) player.shuffleModeEnabled else false
-        val shuffleButton = CommandButton.Builder()
-            .setDisplayName(if (isShuffled) "Shuffle: ON" else "Shuffle: OFF")
-            .setIconResId(if (isShuffled) R.drawable.ic_shuffle_on else R.drawable.ic_shuffle_off)
-            .setSessionCommand(COMMAND_TOGGLE_SHUFFLE)
-            .build()
-
         val isHidden = pureStationId != null && cachedHiddenIds.contains(pureStationId)
-        val hideButton = CommandButton.Builder()
-            .setDisplayName(if (isHidden) "Unhide" else "Hide")
-            .setIconResId(if (isHidden) R.drawable.ic_hide_on else R.drawable.ic_hide_off)
-            .setSessionCommand(COMMAND_TOGGLE_HIDE)
-            .build()
-
-        return ImmutableList.of(favoriteButton, shuffleButton, hideButton)
+        val isShuffled = if (::player.isInitialized) player.shuffleModeEnabled else false
+        return buildCustomLayoutButtons(
+            isFavorite = isFav,
+            isHidden = isHidden,
+            isShuffled = isShuffled
+        )
     }
 
     private fun initializeSession() {
